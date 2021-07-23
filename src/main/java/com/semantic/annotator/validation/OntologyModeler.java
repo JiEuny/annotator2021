@@ -74,6 +74,8 @@ public class OntologyModeler {
         }
         //getObjectPropertiesFromVocabularies();
 
+        //System.out.println("Vocabulary is empty: " + the_Vocabularies.isEmpty());
+
         for(int offset=0; offset<properties.size(); offset++) {
 
             AddAxiom axiom_to_add = null;
@@ -81,11 +83,11 @@ public class OntologyModeler {
             ArrayList<String> one_property = properties.get(offset);
 
             boolean isObjectProperty = the_Vocabularies.containsObjectPropertyInSignature(IRI.create( one_property.get(1) ))
-                                        ||
-                                        one_property.get(1).contains("http://www.w3.org/2000/01/rdf-schema#seeAlso");
+                    ||
+                    one_property.get(1).contains("http://www.w3.org/2000/01/rdf-schema#seeAlso");
 
             //System.out.println("Object Property: ");
-           //System.out.println( one_property.get(1).toString() + " : " + isObjectProperty );
+            //System.out.println( one_property.get(1).toString() + " : " + isObjectProperty );
 
 
             if( /*individuals.contains(one_property.get(2))*/
@@ -146,18 +148,18 @@ public class OntologyModeler {
                             ||
                              rangeAxiom.getRange().toString().equals("xsd:double")
                     ){*/
-                        //one_property.set(2,"\"+" + one_property.get(2).substring(1));
+                    //one_property.set(2,"\"+" + one_property.get(2).substring(1));
 
-                        if( one_property.get(2).contains("\"")){
-
-                            one_property.set(2, one_property.get(2).replace("\"","") );
-                        }
+//                    if( one_property.get(2).contains("\"")){
+//
+//                            one_property.set(2, one_property.get(2).replaceAll("\\\\\"","") );
+//                        }
                     //}
                 }
 
                 XSDTypeDataHandler xsd_data_handler = new XSDTypeDataHandler();
 
-                OWLLiteral literal = xsd_data_handler.toOWLLiteral( one_property.get(2).toString(), dfactory );
+                OWLLiteral literal = xsd_data_handler.toOWLLiteral( one_property.get(2).toString().replaceAll("\"",""), dfactory );
 
                 //System.out.println("Data Properties: ");
                 //System.out.println(" { " + one_property.get(0).toString()  + " " + one_property.get(1).toString() + " " + one_property.get(2).toString() + " . }");
@@ -184,6 +186,8 @@ public class OntologyModeler {
     //--->Create OWLOntology Object from SPARQL Query responses
     /////////////////////////////////////////////////////////////////////
     OWLOntology create_OntologyFromTDB() throws OWLOntologyCreationException {
+
+//        System.out.println("Function create_OntologyFromTDB() called!");
 
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 
@@ -294,7 +298,7 @@ public class OntologyModeler {
 
                 OWLClass range_class = dfactory.getOWLClass(IRI.create( solution.get("range").toString() ));
 
-                OWLObjectPropertyDomainAxiom axiom_range = dfactory.getOWLObjectPropertyDomainAxiom( objectProperty, range_class );
+                OWLObjectPropertyRangeAxiom axiom_range = dfactory.getOWLObjectPropertyRangeAxiom( objectProperty, range_class );
 
                 if(!domainsAndRanges.contains(axiom_range)) {
 

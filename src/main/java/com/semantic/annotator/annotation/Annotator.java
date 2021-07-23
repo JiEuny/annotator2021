@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.semantic.annotator.validation.Validator;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -26,7 +27,7 @@ public class Annotator {
     FileReader reader = null;
     static String type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
     static String nameIndivual_type = "http://www.w3.org/2002/07/owl#Namedindividual";
-    static String url = "jdbc:virtuoso://172.20.0.129:1111";
+    static String url = "jdbc:virtuoso://172.20.0.119:1111";
 
     public Annotator(String graph_name, String template, String entity_id, ArrayList<String> hub_data, Validator validator) {
 
@@ -88,7 +89,7 @@ public class Annotator {
 
                         Triple triples = new Triple(domain, type_d, range);
                         model.add(model.asStatement(triples));
-                    } else if(temp.getKey().equals("data-properties")) {
+                    } else if(temp.getKey().equals("data-properties") && hub_data.get(i)!=null) {
                         JsonArray properties = temp.getValue().getAsJsonArray();
                         JsonElement triple = properties.get(i);
                         JsonObject element = triple.getAsJsonObject();
@@ -100,8 +101,13 @@ public class Annotator {
                         XSDDatatype datatype = typeMaker.getXSDType(element.get("range").toString());
                         Node range = NodeFactory.createLiteralByValue(datatype.parse(hub_data.get(i)), datatype);
 
-                        Triple triples = new Triple(domain, type_d, range);
-                        model.add(model.asStatement(triples));
+
+
+//                        if (hub_data.get(i)!=null) {
+                            Triple triples = new Triple(domain, type_d, range);
+                            model.add(model.asStatement(triples));
+//                        }
+
 
                     }
                 }
@@ -112,7 +118,7 @@ public class Annotator {
 
         try {
 
-            if( validator.isConsistent() && validator.isEntailed() ) {
+            if( validator.isConsistent() && validator.isEntailed(false, true, false, true) ) {
 
                 System.out.println("Validator work");
 
@@ -124,14 +130,12 @@ public class Annotator {
                 vm.add(model);
                 System.out.println("<" + graph_name + "> " + model.size()+ " triples created");
                 vm.close();
+            } else {
+                System.out.println("Validator fail");
+                System.out.println( validator.show_EntailmentValidationLog() );
             }
         } catch ( Validator.NullOntologyException e) {
 
         }
-
-
-
-
-
     }
 }

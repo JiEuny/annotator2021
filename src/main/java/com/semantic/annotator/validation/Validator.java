@@ -9,6 +9,8 @@ public class Validator
     OWLOntology vocabulary, instanceOntology;
     OntologyModeler modeler;
 
+    String entailment_validation_log = "";
+
     ///////////////////////////////////////////////////////////////////
     //-->Constructor to initialize the ontology after retrieving from
     //--->TDB which will be used to validate the instances.
@@ -42,6 +44,7 @@ public class Validator
             ConsistencyValidator consistency_validator = new ConsistencyValidator();
 
             isConsistent = consistency_validator.validateConsistency(vocabulary, instanceOntology);
+
         }else {
 
             throw new NullOntologyException("Provide valid OWLOntology.");
@@ -54,7 +57,7 @@ public class Validator
     //-->Function to validate if the provided instance
     //--->is Entailed
     ////////////////////////////////////////////////////
-    public boolean isEntailed() throws NullOntologyException {
+    public boolean isEntailed(boolean valid_obj_prop_assert_log, boolean invalid_obj_prop_assert_log, boolean valid_data_prop_assert_log, boolean invalid_data_prop_assert_log) throws NullOntologyException {
 
         boolean isEntailed = false;
 
@@ -63,6 +66,13 @@ public class Validator
             EntailmentValidator entailment_validator = new EntailmentValidator();
 
             isEntailed = entailment_validator.validateEntailment(vocabulary, instanceOntology);
+
+            entailment_validation_log = "";
+
+            entailment_validation_log = entailment_validator.showValidatedObjectPropertyAssertions(valid_obj_prop_assert_log, invalid_obj_prop_assert_log); //-->For showing the Validation log
+
+            entailment_validation_log += entailment_validator.showValidatedDataPropertyAssertions(valid_data_prop_assert_log, invalid_data_prop_assert_log); //-->For showing the Validation log
+
         }else {
 
             throw new NullOntologyException("Provide valid OWLOntology.");
@@ -99,5 +109,10 @@ public class Validator
 
             return ("Exception: Null Ontology!. " + exception_Message);
         }
+    }
+
+    public String show_EntailmentValidationLog(){
+
+        return entailment_validation_log;
     }
 }

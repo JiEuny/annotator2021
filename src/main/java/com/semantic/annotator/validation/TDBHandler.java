@@ -1,9 +1,6 @@
 package com.semantic.annotator.validation;
 
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.*;
 import virtuoso.jena.driver.VirtGraph;
 import virtuoso.jena.driver.VirtuosoQueryExecution;
 import virtuoso.jena.driver.VirtuosoQueryExecutionFactory;
@@ -13,6 +10,7 @@ import java.util.ArrayList;
 public class TDBHandler {
 
 
+    //String base_tdb_url = "jdbc:virtuoso://172.20.0.129:1111";
     String base_tdb_url = "jdbc:virtuoso://172.20.0.119:1111";
     String user_id = "dba";
     String user_pass = "dba";
@@ -25,9 +23,24 @@ public class TDBHandler {
                 + "WHERE { GRAPH ?graph \n"
                 + "		{ ?s ?p ?o } \n"
                 + "               FILTER ( \n"
-                + "                       !CONTAINS( STR(?graph), \"#\") \n"
+                + "                       !CONTAINS( STR(?graph), \"#\") && \n"
+                + "                          ( \n"
+                + "                           CONTAINS( STR(?graph), \"common\") || \n"
+                + "                           CONTAINS( STR(?graph), \"parking\") || \n"
+                + "                           CONTAINS( STR(?graph), \"air-quality\") || \n"
+                + "                           CONTAINS( STR(?graph), \"weather\") \n"
+                + "                           ) \n"
                 + "                ) \n"
                 + "} ";
+
+//        String testing_query_string = "SELECT DISTINCT ?graph \n"
+//                + "WHERE { GRAPH ?graph \n"
+//                + "		{ ?s ?p ?o } \n"
+//                + "               FILTER ( \n"
+//                + "                       CONTAINS( STR(?graph), \"common.owl\") || \n"
+//                + "                       CONTAINS( STR(?graph), \"parking.owl\") \n"
+//                + "                ) \n"
+//                + "} ";
 
         //System.out.println("\nConsole LOG--> Generated Query: \n" );
         //System.out.println( query_string );

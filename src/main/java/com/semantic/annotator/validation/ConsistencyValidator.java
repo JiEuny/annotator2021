@@ -56,10 +56,12 @@ public class ConsistencyValidator {
         return instanceConsistent;
     }
 
+
+
     public void explainInconsistency(OWLOntology ontology, OWLReasoner reasoner) {
 
         //Let's see why the ontology is inconsistent.
-        //System.out.println("Computing explanations for the inconsistency...");
+        System.out.println("Computing explanations for the inconsistency...");
 
         factory = new Reasoner.ReasonerFactory() {
 
@@ -88,16 +90,16 @@ public class ConsistencyValidator {
         // unsatisfiability.
         for (Set<OWLAxiom> explanation : explanations) {
 
-            //System.out.println("------------------");
+            System.out.println("------------------");
 
-            //System.out.println("Axioms causing the inconsistency: ");
+            System.out.println("Axioms causing the inconsistency: ");
 
             for (OWLAxiom causingAxiom : explanation) {
 
-                //System.out.println(causingAxiom);
+                System.out.println(causingAxiom);
             }
 
-            //System.out.println("------------------");
+            System.out.println("------------------");
         }
     }
 }

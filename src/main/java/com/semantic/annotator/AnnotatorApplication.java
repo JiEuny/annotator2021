@@ -9,9 +9,8 @@ public class AnnotatorApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(AnnotatorApplication.class, args);
-
         HttpController httpController = new HttpController();
-        httpController.createSubscription();
+//        httpController.createSubscription();
         httpController.getEntities();
     }
 

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
@@ -35,7 +36,7 @@ public class HttpController {
     List<WeatherForecast> weatherForecastList;
 
     RestTemplate restTemplate = new RestTemplate();
-    String url = "http://localhost:8080";
+    String url = "http://172.20.0.144:8080";
 
     HttpHeaders headers = new HttpHeaders();
 
@@ -45,13 +46,14 @@ public class HttpController {
 
     public void getEntities() {
 
+//        System.out.println("where");
         List<String> type = new ArrayList<>();
-        type.add("/entities?type=OffStreetParking");
-        type.add("/entities?type=ParkingSpot");
-        type.add("/entities?type=AirQualityObserved");
-        type.add("/entities?type=AirQualityForecast");
-        type.add("/entities?type=WeatherObserved");
-        type.add("/entities?type=WeatherForecast");
+//        type.add("/entities?type=OffStreetParking");
+//        type.add("/entities?type=ParkingSpot");
+        type.add("/entities?type=kr.datahub.AirQualityObserved:1.0");
+//        type.add("/entities?type=AirQualityForecast");
+        type.add("/entities?type=kr.datahub.WeatherObserved:1.0");
+//        type.add("/entities?type=WeatherForecast");
 
         headers.set("accept", "application/ld+json");
         HttpEntity<String> entity = new HttpEntity<String>(headers);
@@ -59,57 +61,59 @@ public class HttpController {
 
         for(int i = 0; i < type.size(); i++ ) {
             String result = restTemplate.exchange(url+type.get(i), HttpMethod.GET, entity, String.class).getBody();
+//            System.out.println("result: "+result);
 
             switch (i) {
                 case 0:
-                    offStreetParkings = gson.fromJson(result, OffStreetParking[].class);
-                    offStreetParkingList = Arrays.asList(offStreetParkings);
-                    break;
-                case 1:
-                    parkingSpots = gson.fromJson(result, ParkingSpot[].class);
-                    parkingSpotList = Arrays.asList(parkingSpots);
-                    break;
-                case 2:
+//                    offStreetParkings = gson.fromJson(result, OffStreetParking[].class);
+//                    offStreetParkingList = Arrays.asList(offStreetParkings);
+//                    break;
+//                case 1:
+//                    parkingSpots = gson.fromJson(result, ParkingSpot[].class);
+//                    parkingSpotList = Arrays.asList(parkingSpots);
+//                    break;
+//                case 2:
                     airQualityObserveds = gson.fromJson(result, AirQualityObserved[].class);
                     airQualityObservedList = Arrays.asList(airQualityObserveds);
+//                    System.out.println("air: "+airQualityObservedList);
                     break;
-                case 3:
-                    airQualityForecasts = gson.fromJson(result, AirQualityForecast[].class);
-                    airQualityForecastList = Arrays.asList(airQualityForecasts);
-                    break;
-                case 4:
-                    weatherObserveds = gson.fromJson(result, WeatherObserved[].class);
-                    weatherObservedList = Arrays.asList(weatherObserveds);
-                    break;
-                case 5:
-                    weatherForecasts = gson.fromJson(result, WeatherForecast[].class);
-                    weatherForecastList = Arrays.asList(weatherForecasts);
+//                case 3:
+//                    airQualityForecasts = gson.fromJson(result, AirQualityForecast[].class);
+//                    airQualityForecastList = Arrays.asList(airQualityForecasts);
+//                    break;
+//                case 4:
+//                    weatherObserveds = gson.fromJson(result, WeatherObserved[].class);
+//                    weatherObservedList = Arrays.asList(weatherObserveds);
+//                    break;
+//                case 5:
+//                    weatherForecasts = gson.fromJson(result, WeatherForecast[].class);
+//                    weatherForecastList = Arrays.asList(weatherForecasts);
             }
         }
 
-        for(int i = 0; i< offStreetParkingList.size(); i++) {
-            OffStreetParkingAnnotation parkingAnnotation = new OffStreetParkingAnnotation(offStreetParkingList.get(i), validator);
-        }
-
-        for(int i = 0; i<parkingSpotList.size(); i++) {
-            ParkingSpotAnnotation parkingSpotAnnotation = new ParkingSpotAnnotation(parkingSpotList.get(i), validator);
-        }
+//        for(int i = 0; i< offStreetParkingList.size(); i++) {
+//            OffStreetParkingAnnotation parkingAnnotation = new OffStreetParkingAnnotation(offStreetParkingList.get(i), validator);
+//        }
+//
+//        for(int i = 0; i<parkingSpotList.size(); i++) {
+//            ParkingSpotAnnotation parkingSpotAnnotation = new ParkingSpotAnnotation(parkingSpotList.get(i), validator);
+//        }
 
         for(int i = 0; i<airQualityObservedList.size(); i++) {
             AirObservedAnnotation airObservedAnnotation = new AirObservedAnnotation(airQualityObservedList.get(i), validator);
         }
 
-        for(int i = 0; i<airQualityForecastList.size(); i++) {
-            AirForecastAnnotation airForecastAnnotation = new AirForecastAnnotation(airQualityForecastList.get(i), validator);
-        }
+//        for(int i = 0; i<airQualityForecastList.size(); i++) {
+//            AirForecastAnnotation airForecastAnnotation = new AirForecastAnnotation(airQualityForecastList.get(i), validator);
+//        }
 
-        for (int i = 0; i<weatherObservedList.size(); i++) {
-            WeatherObservedAnnotation weatherObservedAnnotation = new WeatherObservedAnnotation(weatherObservedList.get(i), validator);
-        }
+//        for (int i = 0; i<weatherObservedList.size(); i++) {
+//            WeatherObservedAnnotation weatherObservedAnnotation = new WeatherObservedAnnotation(weatherObservedList.get(i), validator);
+//        }
 
-        for(int i = 0; i<weatherForecastList.size(); i++) {
-            WeatherForecastAnnotation weatherForecastAnnotation = new WeatherForecastAnnotation(weatherForecastList.get(i), validator);
-        }
+//        for(int i = 0; i<weatherForecastList.size(); i++) {
+//            WeatherForecastAnnotation weatherForecastAnnotation = new WeatherForecastAnnotation(weatherForecastList.get(i), validator);
+//        }
 
     }
 
