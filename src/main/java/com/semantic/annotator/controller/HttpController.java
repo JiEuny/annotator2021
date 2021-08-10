@@ -36,7 +36,8 @@ public class HttpController {
     List<WeatherForecast> weatherForecastList;
 
     RestTemplate restTemplate = new RestTemplate();
-    String url = "http://172.20.0.144:8080";
+    String dataCoreURL = "http://172.20.0.144:8080";
+    String semanticAPIURL = "http://localhost:8080/semantic/api/v1";
 
     HttpHeaders headers = new HttpHeaders();
 
@@ -46,7 +47,6 @@ public class HttpController {
 
     public void getEntities() {
 
-//        System.out.println("where");
         List<String> type = new ArrayList<>();
 //        type.add("/entities?type=OffStreetParking");
 //        type.add("/entities?type=ParkingSpot");
@@ -60,8 +60,7 @@ public class HttpController {
 
 
         for(int i = 0; i < type.size(); i++ ) {
-            String result = restTemplate.exchange(url+type.get(i), HttpMethod.GET, entity, String.class).getBody();
-//            System.out.println("result: "+result);
+            String result = restTemplate.exchange(dataCoreURL+type.get(i), HttpMethod.GET, entity, String.class).getBody();
 
             switch (i) {
                 case 0:
@@ -117,6 +116,22 @@ public class HttpController {
 
     }
 
+    public void createGraph(JsonObject insertBody) {
+
+        headers.set("Content-Type", "application/json");
+        HttpEntity<String> entity = new HttpEntity<>(insertBody.toString(), headers);
+        restTemplate.exchange(semanticAPIURL+"/insert", HttpMethod.POST, entity, String.class);
+
+    }
+
+    public void deleteGraph(String graphURI) {
+
+        headers.set("Content-Type", "application/x-www-form-urlencoded");
+        HttpEntity<String> entity = new HttpEntity<>(graphURI, headers);
+        restTemplate.exchange(semanticAPIURL+"/delete?graphURI={id}", HttpMethod.DELETE, entity, String.class, graphURI);
+
+    }
+
     public void createSubscription() {
 
         headers.set("Accept", "application/json");
@@ -139,7 +154,7 @@ public class HttpController {
 
         for (int i = 0; i<jsonArray.size(); i++) {
             HttpEntity<String> entity = new HttpEntity<String>(jsonArray.get(i).toString(), headers);
-            String result = restTemplate.exchange(url+"/subscriptions", HttpMethod.POST, entity, String.class).getBody();
+            String result = restTemplate.exchange(dataCoreURL+"/subscriptions", HttpMethod.POST, entity, String.class).getBody();
             System.out.println("create"+result);
         }
 

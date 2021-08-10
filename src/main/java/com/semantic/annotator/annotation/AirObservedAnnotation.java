@@ -14,18 +14,14 @@ public class AirObservedAnnotation {
 
     public AirObservedAnnotation(AirQualityObserved data, Validator validator) {
 
-//        System.out.println("anno: "+data);
         AirQualityObservedSeeker seeker = new AirQualityObservedSeeker();
         AirQualityObservedDTO mappedDTO = seeker.map(data, AirQualityObservedDTO.class);
-//        System.out.println(mappedDTO);
 
         ArrayList<String> hub_data = new ArrayList<>();
         for(int i=0; i<20; i++) {
             hub_data.add(mappedDTO.getOrder(i));
         }
 
-//        graph_name = graph_name + data.getId().split(":")[2] + "_" + data.getId().split(":")[3];
-//        String entity_id = data.getId().split(":")[2] + "_" + data.getId().split(":")[3];
         graph_name = graph_name + data.getId().split(":")[3];
         String entity_id = data.getId().split(":")[3];
 
