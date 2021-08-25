@@ -2,12 +2,17 @@ package com.semantic.annotator.controller;
 
 import com.google.gson.*;
 import com.semantic.annotator.annotation.*;
+import com.semantic.annotator.configuration.Configuration;
 import com.semantic.annotator.resource.*;
 import com.semantic.annotator.validation.Validator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +25,7 @@ import java.util.*;
 import java.util.List;
 
 @Controller
+@Component
 public class HttpController {
 
     OffStreetParking[] offStreetParkings;
@@ -36,11 +42,8 @@ public class HttpController {
     List<WeatherForecast> weatherForecastList;
 
     RestTemplate restTemplate = new RestTemplate();
-    String dataCoreURL = "http://172.20.0.144:8080";
-    String semanticAPIURL = "http://localhost:8080/semantic/api/v1";
 
     HttpHeaders headers = new HttpHeaders();
-
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     Validator validator = new Validator();
@@ -50,17 +53,16 @@ public class HttpController {
         List<String> type = new ArrayList<>();
 //        type.add("/entities?type=OffStreetParking");
 //        type.add("/entities?type=ParkingSpot");
-        type.add("/entities?type=kr.datahub.AirQualityObserved:1.0");
+        type.add("/entities?type=" + Configuration.AIR_QUALITY_OBSERVED_TYPE);
 //        type.add("/entities?type=AirQualityForecast");
-        type.add("/entities?type=kr.datahub.WeatherObserved:1.0");
+        type.add("/entities?type=" + Configuration.WEATHER_OBSERVED_TYPE);
 //        type.add("/entities?type=WeatherForecast");
 
         headers.set("accept", "application/ld+json");
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-
         for(int i = 0; i < type.size(); i++ ) {
-            String result = restTemplate.exchange(dataCoreURL+type.get(i), HttpMethod.GET, entity, String.class).getBody();
+            String result = restTemplate.exchange(Configuration.DATA_CORE_URL+type.get(i), HttpMethod.GET, entity, String.class).getBody();
 
             switch (i) {
                 case 0:
@@ -120,7 +122,7 @@ public class HttpController {
 
         headers.set("Content-Type", "application/json");
         HttpEntity<String> entity = new HttpEntity<>(insertBody.toString(), headers);
-        restTemplate.exchange(semanticAPIURL+"/insert", HttpMethod.POST, entity, String.class);
+        restTemplate.exchange(Configuration.SEMANTIC_API_URL+"/insert", HttpMethod.POST, entity, String.class);
 
     }
 
@@ -128,7 +130,7 @@ public class HttpController {
 
         headers.set("Content-Type", "application/x-www-form-urlencoded");
         HttpEntity<String> entity = new HttpEntity<>(graphURI, headers);
-        restTemplate.exchange(semanticAPIURL+"/delete?graphURI={id}", HttpMethod.DELETE, entity, String.class, graphURI);
+        restTemplate.exchange(Configuration.SEMANTIC_API_URL+"/delete?graphURI={id}", HttpMethod.DELETE, entity, String.class, graphURI);
 
     }
 
@@ -154,7 +156,7 @@ public class HttpController {
 
         for (int i = 0; i<jsonArray.size(); i++) {
             HttpEntity<String> entity = new HttpEntity<String>(jsonArray.get(i).toString(), headers);
-            String result = restTemplate.exchange(dataCoreURL+"/subscriptions", HttpMethod.POST, entity, String.class).getBody();
+            String result = restTemplate.exchange(Configuration.DATA_CORE_URL+"/subscriptions", HttpMethod.POST, entity, String.class).getBody();
             System.out.println("create"+result);
         }
 
