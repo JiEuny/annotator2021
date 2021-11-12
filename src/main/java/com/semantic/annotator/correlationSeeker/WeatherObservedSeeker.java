@@ -13,8 +13,8 @@ public class WeatherObservedSeeker {
         this.mapperFactory.classMap(WeatherObserved.class, WeatherObservedDTO.class).
                 mapNulls(false).
                 mapNullsInReverse(false).
-                field("weatherObservation.value","weatherObservation").
-                field("weatherObservation.value","weatherEvaluationHasRecord").
+                field("observedValue","weatherObservation").
+                field("observedValue","weatherEvaluationHasRecord").
                 field("address.value.addressCountry", "addressCountry").
                 field("address.value.addressRegion", "addressRegion").
                 field("address.value.addressLocality", "addressLocality").
@@ -23,7 +23,7 @@ public class WeatherObservedSeeker {
                 field("location.value.type", "locationType").
                 field("location.value.coordinates[0]", "longitude").
                 field("location.value.coordinates[1]", "latitute").
-                field("weatherObservation.observedAt","observedAt").
+                field("temperature.observedAt","observedAt").
                 byDefault().
                 register();
 

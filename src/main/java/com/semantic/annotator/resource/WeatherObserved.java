@@ -1,37 +1,61 @@
 package com.semantic.annotator.resource;
 
+import lombok.Data;
+
+import java.util.ArrayList;
+
+@Data
 public class WeatherObserved {
 
     private String id;
     private String type;
     private String createdAt;
     private String modifiedAt;
+    private Atomespheric atom;
+    private Humidity humidity;
     private Location location;
+    private Source source;
+    private Temperature temperature;
+    private String observedValue;
     private Address address;
-    private WeatherObservation weatherObservation;
 
-    public String getId() {
-        return id;
+    @Data
+    public class Atomespheric {
+        private String observedAt;
+        private String type;
+        private Double value;
     }
 
-    public String getType() {
-        return type;
+    @Data
+    public class Humidity {
+        private String observedAt;
+        private String type;
+        private Double value;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    @Data
+    public class Source {
+        private String type;
+        private String value;
     }
 
-    public String getModifiedAt() {
-        return modifiedAt;
+    @Data
+    public class Temperature {
+        private String observedAt;
+        private String type;
+        private Double value;
     }
 
-    public Location getLocation() {
-        return location;
-    }
+    public String getObservedValue() {
 
-    public Address getAddress() {
-        return address;
+        ArrayList<Object> hub_data = new ArrayList<>();
+        if (atom!=null)
+            hub_data.add("\"so2\": " + atom.getValue());
+        if (humidity!=null)
+            hub_data.add("\"so2\": " + humidity.getValue());
+        if (temperature!=null)
+            hub_data.add("\"so2\": " + temperature.getValue());
+        return hub_data.toString();
     }
 
     public static class WeatherObservation {
@@ -107,7 +131,7 @@ public class WeatherObserved {
 //        }
     }
 
-    public WeatherObservation getWeatherObservation() {
-        return weatherObservation;
-    }
+//    public WeatherObservation getWeatherObservation() {
+//        return weatherObservation;
+//    }
 }
