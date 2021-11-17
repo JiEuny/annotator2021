@@ -72,13 +72,19 @@ public class Annotator {
                         JsonObject insertTriples = new JsonObject();
                         model.add(model.asStatement(triples));
 
+                        insertTriples.addProperty("sub", "<" + tempArray.get(i).toString().replaceAll("\"","")+"_"+entity_id + ">" );
+                        insertTriples.addProperty("pred", "<" + type + ">");
+                        insertTriples.addProperty("obj", "<" + typeList.get(i) + ">");
+                        jsonArray.add(insertTriples);
+
+                        JsonObject insertTriples_ind = new JsonObject();
                         domain = NodeFactory.createURI(Domain_list.get(i));
                         type_d = NodeFactory.createURI(type);
                         range = NodeFactory.createURI(nameIndivual_type);
-                        insertTriples.addProperty("sub", "<" + Domain_list.get(i) + ">");
-                        insertTriples.addProperty("pred", "<" + type + ">");
-                        insertTriples.addProperty("obj", "<" + nameIndivual_type + ">");
-                        jsonArray.add(insertTriples);
+                        insertTriples_ind.addProperty("sub", "<" + Domain_list.get(i) + ">");
+                        insertTriples_ind.addProperty("pred", "<" + type + ">");
+                        insertTriples_ind.addProperty("obj", "<" + nameIndivual_type + ">");
+                        jsonArray.add(insertTriples_ind);
 
                         triples = new Triple(domain, type_d, range);
                         model.add(model.asStatement(triples));
