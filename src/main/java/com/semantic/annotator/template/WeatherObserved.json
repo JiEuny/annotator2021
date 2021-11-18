@@ -77,6 +77,11 @@
       "domain":"http:\/\/www.city-hub.kr\/ontologies\/2019\/1\/weather#WeatherEvaluation_1",
       "property":"http:\/\/www.city-hub.kr\/ontologies\/2019\/1\/common#evaluatedForLocation",
       "range":"http:\/\/www.city-hub.kr\/ontologies\/2019\/1\/common#GeoProperty_1"
+    },
+    {
+      "domain":"http:\/\/www.city-hub.kr\/ontologies\/2019\/1\/weather#WeatherObservation_1",
+      "property":"http://www.w3.org/2000/01/rdf-schema#seeAlso",
+      "range":"http:\/\/www.city-hub.kr\/ontologies\/2019\/1\/weather#WeatherEvaluation_1"
     }
   ],
   "data-properties":[
